@@ -5,6 +5,7 @@ using QubitWith.Auth.Components;
 using QubitWith.Auth.Components.Account;
 using QubitWith.Auth.Data;
 using QubitWith.Auth.Extensions;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,15 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 builder.Services.AddUIServices();
 builder.Services.AddContracts();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.Configure<Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration>(config =>
+{
+config.SetAzureTokenCredential(new DefaultAzureCredential());
+});
+
+builder.Services.AddApplicationInsightsTelemetry(new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions
+{
+    ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
+});
 
 
 var app = builder.Build();

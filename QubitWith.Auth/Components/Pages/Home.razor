@@ -6,10 +6,10 @@
 @attribute [Authorize]
 <PageTitle>Home</PageTitle>
 <AuthorizeView>
-    <StatisticsSection   />
+    <StatisticsSectionAdmin  StatisticsAdmin="@statisticAdmin" />
 </AuthorizeView>
 @code {
-    private StatisticsAdmin? statisticAdmin;
+    private StatisticsAdmin? statisticAdmin= new();
     protected override async Task OnInitializedAsync()
     {
         statisticAdmin = await statisticRepository.GetAdminStatistics();
