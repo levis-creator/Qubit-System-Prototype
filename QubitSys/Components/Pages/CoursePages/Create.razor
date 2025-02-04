@@ -1,0 +1,67 @@
+﻿@* @page "/courses/create" *@
+@* @inject NavigationManager NavigationManager *@
+@* @inject ILogger<Create> Logger *@
+@* @rendermode InteractiveServer *@
+
+@* <PageTitle>Create</PageTitle> *@
+
+@* <h1>Create</h1> *@
+
+@* <h2>Department</h2> *@
+@* <hr /> *@
+
+@* <div class="row"> *@
+@*     <div class="col-md-4"> *@
+@*         <EditForm Model="@Course" OnValidSubmit="@AddCourses" FormName="create"> *@
+@*             <DataAnnotationsValidator /> *@
+@*             <ValidationSummary class="text-danger" role="alert" /> *@
+
+@*             <div class="mb-3"> *@
+@*                 <label for="courseName" class="form-label">Course Name:</label> *@
+@*                 <InputText id="courseName" @bind-Value="Course.CourseName" class="form-control" /> *@
+@*                 <ValidationMessage For="() => Course.CourseName" class="text-danger" /> *@
+@*             </div> *@
+
+@*             <div class="mb-3"> *@
+@*                 <label for="courseCode" class="form-label">Course Code:</label> *@
+@*                 <InputText id="courseCode" @bind-Value="Course.CourseCode" class="form-control" /> *@
+@*                 <ValidationMessage For="() => Course.CourseCode" class="text-danger" /> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label for="DepartmentId">Department</label> *@
+@*                 <InputSelect id="DepartmentId" class="form-control" @bind-Value="Course.DepartmentId"> *@
+@*                     <option value="">-- Select Department --</option> *@
+@*                     @foreach (var dept in departments) *@
+@*                     { *@
+@*                         <option value="@dept.Id">@dept.DepartmentName</option> *@
+@*                     } *@
+@*                 </InputSelect> *@
+@*                 <ValidationMessage For="() => Course.DepartmentId" /> *@
+@*             </div> *@
+@*             <button type="submit" class="btn btn-primary">Create</button> *@
+@*         </EditForm> *@
+@*     </div> *@
+@* </div> *@
+
+@* <div> *@
+@*     <a href="/courses">Back to List</a> *@
+@* </div> *@
+
+@* @code { *@
+@*     private Course Course { get; set; } = new(); *@
+@*     private List<Department> departments { get; set; } = []; *@
+
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         // Fetch all departments for the select dropdown *@
+@*         departments = await DepartmentRepository.GetAll().Result.ToListAsync(); *@
+@*     } *@
+
+@*     private async Task AddCourses() *@
+@*     {  *@
+@*         await CourseRepository.Add(Course); *@
+@*         NavigationManager.NavigateTo("/courses"); *@
+@*     } *@
+
+
+@* } *@

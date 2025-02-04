@@ -1,0 +1,49 @@
+﻿@* @page "/courses" *@
+@* @attribute [StreamRendering] *@
+@* <PageTitle>Courses</PageTitle> *@
+
+@* <h1>Courses</h1> *@
+
+@* <p> *@
+@*     <a href="courses/create">Create New</a> *@
+@* </p> *@
+
+@* @if (courses == null) *@
+@* { *@
+@*     <p>Loading...</p> *@
+@* } *@
+@* else if (!courses.Any()) *@
+@* { *@
+@*     <p>No Courses available.</p> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <DataGrid TItem="course" *@
+@*               Data="@courses" *@
+@*               TotalItems="@totalCourses" *@
+@*               PageSize="10" *@
+@*               ShowPager *@
+@*               Responsive> *@
+@*                   <DataGridColumn Field="@nameof(course.)" Caption="Email" Editable /> *@
+@*         <DataGridCommandColumn /> *@
+@*     </DataGrid> *@
+
+
+@* } *@
+
+@* @code { *@
+@*     private List<Course> courses = default!; *@
+@*     private int totalCourses = 10; *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             courses = await CourseRepository.GetAll(); *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             // Log the exception (e.g., using a logger) *@
+@*             Console.Error.WriteLine($"Error fetching departments: {ex.Message}"); *@
+@*         } *@
+@*     } *@
+@* } *@

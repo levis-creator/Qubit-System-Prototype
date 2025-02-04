@@ -1,0 +1,59 @@
+﻿@page "/courses"
+@attribute [StreamRendering]
+<PageTitle>Courses</PageTitle>
+
+<h1>Courses</h1>
+
+<p>
+    <a href="courses/create">Create New</a>
+</p>
+
+ @if (coursesDb == null)
+{
+    <p>Loading...</p>
+}
+else if (!coursesDb.Any())
+{
+    <p>No Courses available.</p>
+}
+else
+{
+    <DataGrid TItem="CourseDisplayDto"
+              data="@coursesDb"
+              PageSize="10"
+              Responsive
+              ShowPager
+              ShowPageSizes>
+        <DataGridColumn Field="@nameof(CourseDisplayDto.CourseName)" Caption="Course Name" Editable />
+        <DataGridColumn Field="@nameof(CourseDisplayDto.CourseCode)" Caption="Course Code" Editable />
+        <DataGridColumn Field="@nameof(CourseDisplayDto.DepartmentName)" Caption="Department Name" Editable />
+        <DataGridColumn Caption="Actions">
+            <DisplayTemplate Context="context">
+                <a href="courses/edit/?id=@context.Id" class="link">Edit</a>
+                <a href="courses/details/?id=@context.Id">Details</a>
+                <a href="courses/delete/?id=@context.Id" class="link">Delete</a>
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridCommandColumn />
+    </DataGrid>
+}
+
+@code {
+
+    private List<CourseDisplayDto> coursesDb = new List<CourseDisplayDto>();
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            coursesDb = await CourseRepository.CourseDisplayAll();
+
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (e.g., using a logger) *@
+            Console.Error.WriteLine($"Error fetching departments: {ex.Message}");
+        }
+
+    }
+}

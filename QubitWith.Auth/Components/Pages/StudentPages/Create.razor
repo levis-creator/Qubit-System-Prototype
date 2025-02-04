@@ -1,0 +1,88 @@
+﻿@page "/students/create"
+@inject NavigationManager Navigation
+@inject ILogger<Create> Logger
+@rendermode InteractiveServer
+
+<PageTitle>Create Student</PageTitle>
+
+<PageHead Title="Create Student" BackLink="students" />
+
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@Student" OnValidSubmit="@AddStudent" FormName="AddStudent">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">First Name</label>
+                <InputText @bind-Value="Student.FirstName" class="form-control" />
+                <ValidationMessage For="@(() => Student.FirstName)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Middle Name</label>
+                <InputText @bind-Value="Student.MiddleName" class="form-control" />
+                <ValidationMessage For="@(() => Student.MiddleName)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                <InputText @bind-Value="Student.LastName" class="form-control" />
+                <ValidationMessage For="@(() => Student.LastName)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Admission No</label>
+                <InputText @bind-Value="Student.AdmissionNo" class="form-control" />
+                <ValidationMessage For="@(() => Student.AdmissionNo)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <InputText @bind-Value="Student.EmailAddress" type="email" class="form-control" />
+                <ValidationMessage For="@(() => Student.EmailAddress)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone Number</label>
+                <InputText @bind-Value="Student.PhoneNumber" type="tel" class="form-control" />
+                <ValidationMessage For="@(() => Student.PhoneNumber)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Course</label>
+                <InputSelect @bind-Value="Student.CoursesId" class="form-select">
+                    <option value="">Choose Course</option>
+                    @foreach (var course in Courses)
+                    {
+                        <option value="@course.Id">@course.CourseName</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => Student.CoursesId)" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/students">Back to List</a>
+</div>
+
+@code {
+    private StudentInputDto Student { get; set; } = new();
+    private List<Course> Courses { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = await CourseRepository.GetAll();
+    }
+
+    private async Task AddStudent()
+    {
+        await StudentRepository.Add(Student);
+        Navigation.NavigateTo("/students");
+    }
+}

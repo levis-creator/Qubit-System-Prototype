@@ -1,0 +1,121 @@
+﻿@page "/courses/edit"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Courses</h2>
+<hr />
+@if (Course is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <Validations @ref="validations" Model="@Course" Mode="ValidationMode.Manual">
+                <input type="hidden" name="@Course.Id" value="@Course.Id" />
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Course Name
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Course.CourseName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Course Code
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Course.CourseCode">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidationRule.IsSelected">
+                    <Field>
+                        <FieldLabel>
+                            Department
+                        </FieldLabel>
+                        <FieldBody>
+                            <Select class="form-control" @bind-SelectedValue="@Course.DepartmentId">
+                                <SelectItem>Choose department</SelectItem>
+
+                                @foreach (var dep in departments)
+                                {
+                                    <SelectItem Value="@dep.Id">
+                                        @dep.DepartmentName
+                                    </SelectItem>
+                                }
+                            </Select>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+
+                <Button Color="Color.Primary" Clicked="@UpdateCourse">Submit</Button>
+            </Validations>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/courses">Back to List</a>
+</div>
+
+@code {
+    Validations? validations;
+    [SupplyParameterFromQuery]
+    private string Id{ get; set; }
+
+    [SupplyParameterFromForm]
+    private Course? Course { get; set; }
+    private List<Department> departments { get; set; } = [];
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        Course ??= await CourseRepository.GetById(Id);
+        departments = await DepartmentRepository.GetAll();
+
+
+        if (Course is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateCourse()
+    {
+        if (await validations!.ValidateAll())
+        {
+            try
+            {
+
+                await CourseRepository.Update(Course!);
+                NavigationManager.NavigateTo("/courses");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+    }
+}

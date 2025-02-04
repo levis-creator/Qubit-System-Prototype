@@ -1,0 +1,67 @@
+﻿ @page "/departments/create"
+ @inject NavigationManager NavigationManager
+ @inject ILogger<Create> Logger
+ @rendermode InteractiveServer
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Department</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <Validations @ref="validations" Model="@Department" Mode="ValidationMode.Manual">
+            <Validation>
+                <Field>
+                    <FieldLabel>
+                        Department Name
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="@Department.DepartmentName">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+            </Validation>
+            <Validation>
+                <Field>
+                    <FieldLabel>
+                        Department Code
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="@Department.DepartmentCode">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+            </Validation>
+            <Button Color="Color.Primary" Clicked="@AddDepartment">Submit</Button>
+        </Validations>
+    </div>
+</div>
+
+<div>
+    <a href="/departments">Back to List</a>
+</div>
+
+@code {
+    Validations? validations = default;
+    private Department Department { get; set; } = new Department();
+
+    private async Task AddDepartment()
+    {
+        if (await validations!.ValidateAll())
+        {
+            await DepartmentRepository.Add(Department);
+            NavigationManager.NavigateTo("/departments");
+        }
+    }
+
+
+ }

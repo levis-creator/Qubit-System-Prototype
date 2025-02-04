@@ -1,0 +1,79 @@
+﻿@page "/courses/edit"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Edit Course</PageTitle>
+
+<PageHead Title="Edit Course" BackLink="courses" />
+
+@if (Course == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@Course" OnValidSubmit="UpdateCourse" FormName="CourseEdit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="courseName" class="form-label">Course Name</label>
+            <InputText id="courseName" class="form-control" @bind-Value="Course.CourseName" />
+        </div>
+
+        <div class="mb-3">
+            <label for="courseCode" class="form-label">Course Code</label>
+            <InputText id="courseCode" class="form-control" @bind-Value="Course.CourseCode" />
+        </div>
+
+        <div class="mb-3">
+            <label for="department" class="form-label">Department</label>
+            <InputSelect id="department" class="form-control" @bind-Value="Course.DepartmentId">
+                <option value="">Choose Department</option>
+                @foreach (var dep in departments)
+                {
+                    <option value="@dep.Id">@dep.DepartmentName</option>
+                }
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
+
+<div>
+    <a href="/courses">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    private Course? Course { get; set; }
+    private List<Department> departments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Course = await CourseRepository.GetById(Id);
+        departments = await DepartmentRepository.GetAll();
+
+        if (Course is null)
+        {
+            NavigationManager.NavigateTo("/notfound");
+        }
+    }
+
+    private async Task UpdateCourse()
+    {
+        try
+        {
+            await CourseRepository.Update(Course!);
+            NavigationManager.NavigateTo("/courses");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating course: {ex.Message}");
+        }
+    }
+}

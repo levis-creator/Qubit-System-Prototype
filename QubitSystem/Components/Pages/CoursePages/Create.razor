@@ -1,0 +1,91 @@
+﻿ @page "/courses/create"
+ @inject NavigationManager NavigationManager
+ @inject ILogger<Create> Logger
+ @rendermode InteractiveServer
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Courses</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <Validations @ref="validations" Model="@Course" Mode="ValidationMode.Manual">
+            <Validation>
+                <Field>
+                    <FieldLabel>
+                        Course Name
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="@Course.CourseName">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+            </Validation>
+            <Validation>
+                <Field>
+                    <FieldLabel>
+                        Course Code
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="@Course.CourseCode">
+                            <Feedback>
+                                <ValidationError />
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+            </Validation>
+            <Validation Validator="ValidationRule.IsSelected">
+                <Field>
+                    <FieldLabel>
+                        Department
+                    </FieldLabel>
+                    <FieldBody>
+                        <Select class="form-control" @bind-SelectedValue="@Course.DepartmentId">
+                            <SelectItem>Choose Department</SelectItem>
+                            @foreach (var dep in departments)
+                            {
+                                <SelectItem Value="@dep.Id">
+                                    @dep.DepartmentName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </FieldBody>
+                </Field>
+            </Validation>
+
+            <Button Color="Color.Primary" Clicked="@AddCourses">Submit</Button>
+        </Validations>
+    </div>
+</div>
+
+<div>
+    <a href="/courses">Back to List</a>
+</div>
+
+@code {
+    Validations? validations;
+    private Course Course { get; set; } = new();
+    private List<Department> departments { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch all departments for the select dropdown
+        departments = await DepartmentRepository.GetAll();
+    }
+
+    private async Task AddCourses()
+    {
+        if (await validations!.ValidateAll() && !string.IsNullOrEmpty(Course.DepartmentId))
+        {
+            await CourseRepository.Add(Course);
+            NavigationManager.NavigateTo("/courses");
+        }
+    }
+}

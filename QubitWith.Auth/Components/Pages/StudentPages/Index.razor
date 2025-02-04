@@ -1,0 +1,56 @@
+﻿ @page "/students"
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+<PageTitle>Students</PageTitle>
+
+<PageHead Title="Students" CreateLink="students/create" />
+
+
+ @if (students == null)
+{
+    <p>Loading...</p>
+}
+else if (!students.Any())
+{
+    <p>No Students available.</p>
+}
+else
+{
+    <div class="row">
+        <QuickGrid Items="students">
+            <PropertyColumn Property="@(s => s.AdmissionNo)" Title="Admission No" />
+            <PropertyColumn Property="@(s => s.FirstName)" Title="Firstname" />
+            <PropertyColumn Property="@(s => s.LastName)" Title="Lastname" />
+            <PropertyColumn Property="@(s => s.PhoneNumber)" Title="Phone Number" />
+            <PropertyColumn Property="@(s => s.EmailAddress)" Title="Email Address" />
+
+            <TemplateColumn Title="Actions">
+                <a href="/students/edit/?id=@context.Id" class="link">Edit</a> |
+                <a href="/students/details/?id=@context.Id">Details</a> |
+                <a href="/students/delete/?id=@context.Id" class="link">Delete</a>
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+    <Paginator State="pagination" />
+}
+
+@code {
+    private IQueryable<Student> students = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+
+        {
+            var results = await StudentRepository.GetAll();
+            students = results.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (e.g., using a logger)
+            Console.Error.WriteLine($"Error fetching departments: {ex.Message}");
+        }
+    }
+}

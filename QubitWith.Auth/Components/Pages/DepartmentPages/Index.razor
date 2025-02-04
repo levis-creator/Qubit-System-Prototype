@@ -1,0 +1,51 @@
+﻿@page "/departments"
+
+@attribute [StreamRendering, Authorize]
+
+<PageTitle>Departments</PageTitle>
+
+<PageHead Title="Departments" CreateLink="departments/create" />
+
+@if (departments == null)
+{
+    <p>Loading...</p>
+}
+else if (!departments.Any())
+{
+    <p>No departments available.</p>
+}
+else
+{
+    <div class="row">
+        <QuickGrid Items="departments" Pagination="pagination" TGridItem="Department">
+            <PropertyColumn Property="@(p => p.DepartmentName)" />
+            <PropertyColumn Property="@(p => p.DepartmentCode)" />
+            <TemplateColumn Title="Actions">
+                <a href="departments/edit/?id=@(context.Id)" class="link">Edit</a>
+                <a href="departments/details/?id=@(context.Id)">Details</a>
+                <a href="departments/delete/?id=@(context.Id)" class="link">Delete</a>
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+    <Paginator State="pagination" />
+
+}
+
+@code {
+    private IQueryable<Department> departments = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var results = await DepartmentRepository.GetAll();
+            departments = results.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error fetching departments: {ex.Message}");
+            departments = new List<Department>().AsQueryable(); // Fallback to empty list
+        }
+    }
+}

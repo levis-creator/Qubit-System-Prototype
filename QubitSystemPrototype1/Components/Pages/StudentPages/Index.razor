@@ -1,0 +1,57 @@
+﻿ @page "/students"
+@attribute [StreamRendering]
+<PageTitle>Students</PageTitle>
+
+<h1>Students</h1>
+
+<p>
+    <a href="students/create">Create New</a>
+</p>
+
+ @if (students == null)
+{
+    <p>Loading...</p>
+}
+else if (!students.Any())
+{
+    <p>No Students available.</p>
+}
+else
+{
+    <DataGrid TItem="Student"
+              data="@students"
+              PageSize="10"
+              Responsive
+              ShowPager
+              ShowPageSizes>
+        <DataGridColumn Field="@nameof(Student.AdmissionNo)" Caption="Admission No" Editable="false" />
+        <DataGridColumn Field="@nameof(Student.FirstName)" Caption="Firstname" Editable="false" />
+        <DataGridColumn Field="@nameof(Student.LastName)" Caption="Lastname" Editable="false"  />
+        <DataGridColumn Field="@nameof(Student.PhoneNumber)" Caption="Phone Number" Editable="false" />
+        <DataGridColumn Field="@nameof(Student.Email)" Caption="Email Address" Editable="false" />
+        <DataGridColumn Caption="Actions">
+            <DisplayTemplate Context="context">
+                <a href="students/edit/?id=@context.Id" class="link">Edit</a>
+                <a href="students/details/?id=@context.Id">Details</a>
+                <a href="students/delete/?id=@context.Id" class="link">Delete</a>
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridCommandColumn />
+    </DataGrid>
+}
+
+@code {
+    private List<Student> students = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            students = await StudentRepository.GetAll();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (e.g., using a logger)
+            Console.Error.WriteLine($"Error fetching departments: {ex.Message}");
+        }
+    }
+ }

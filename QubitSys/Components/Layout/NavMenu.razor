@@ -1,0 +1,72 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">QubitSys</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        @foreach (var navItem in navItems)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@navItem.path" Match="NavLinkMatch.All">
+                    <span class="bi @navItem.Icon" aria-hidden="true"></span> @navItem.Title
+                </NavLink>
+            </div>
+        }
+
+    </nav>
+</div>
+@code {
+    private class NavItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+        public string path { get; set; } = string.Empty;
+    }
+    private IEnumerable<NavItem> navItems = new List<NavItem>
+    {
+        new NavItem
+        {
+
+            Title = "Home",
+            Icon = "bi-house-door-fill-nav-menu",
+            path =""
+        },
+        new NavItem
+        {
+
+            Title = "Counter",
+            Icon = "bi-plus-square-fill-nav-menu",
+            path="counter"
+        },
+        new NavItem
+        {
+
+            Title = "Weather",
+            Icon = "bi-list-nested-nav-menu",
+            path="weather"
+
+        },
+        new NavItem
+        {
+
+            Title = "Department",
+            Icon = "bi-building",
+            path="departments"
+
+        },
+        new NavItem
+        {
+
+            Title = "Courses",
+            Icon = "bi-building",
+            path="courses"
+
+        },
+    };
+}
+

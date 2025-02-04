@@ -1,0 +1,65 @@
+﻿@page "/courses/create"
+@inject NavigationManager NavigationManager
+@inject ILogger<Create> Logger
+@rendermode InteractiveServer
+
+<PageHead Title="Create Course" BackLink="courses" />
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@Course" OnValidSubmit="AddCourses" FormName="CreateCourseForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="courseName" class="form-label">Course Name</label>
+                <InputText id="courseName" class="form-control" @bind-Value="Course.CourseName" />
+                <ValidationMessage For="() => Course.CourseName" />
+            </div>
+
+            <div class="mb-3">
+                <label for="courseCode" class="form-label">Course Code</label>
+                <InputText id="courseCode" class="form-control" @bind-Value="Course.CourseCode" />
+                <ValidationMessage For="() => Course.CourseCode" />
+            </div>
+
+            <div class="mb-3">
+                <label for="department" class="form-label">Department</label>
+                <InputSelect id="department" class="form-control" @bind-Value="Course.DepartmentId">
+                    <option value="">Choose Department</option>
+                    @foreach (var dep in departments)
+                    {
+                        <option value="@dep.Id">@dep.DepartmentName</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Course.DepartmentId" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/courses">Back to List</a>
+</div>
+
+@code {
+    private Course Course { get; set; } = new();
+    private List<Department> departments { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch all departments for the select dropdown
+        departments = await DepartmentRepository.GetAll();
+    }
+
+    private async Task AddCourses()
+    {
+        if (Course.DepartmentId.HasValue)
+        {
+            await CourseRepository.Add(Course);
+            NavigationManager.NavigateTo("/courses");
+        }
+    }
+}

@@ -1,0 +1,92 @@
+﻿@page "/departments/edit"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+<h2>Department</h2>
+<hr />
+@if (Department is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <Validations @ref="validations" Model="@Department" Mode="ValidationMode.Manual">
+                <input type="hidden" name="@Department.Id" value="@Department.Id" />
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Department Name
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Department.DepartmentName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Department Code
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Department.DepartmentCode">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Button Color="Color.Primary" Clicked="@UpdateDepartment">Submit</Button>
+            </Validations>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/departments">Back to List</a>
+</div>
+
+@code {
+    Validations? validations = default;
+    [SupplyParameterFromQuery]
+    private string Id{ get; set; }
+
+    [SupplyParameterFromForm]
+    private Department? Department { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        Department ??= await DepartmentRepository.GetById(Id);
+
+        if (Department is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+
+    private async Task UpdateDepartment()
+    {
+        if (await validations!.ValidateAll())
+        {
+            try
+            {
+                await DepartmentRepository.Update(Department!);
+                NavigationManager.NavigateTo("/departments");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+    }
+}

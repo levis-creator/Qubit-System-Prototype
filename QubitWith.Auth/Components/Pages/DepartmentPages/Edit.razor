@@ -1,0 +1,71 @@
+﻿@page "/departments/edit"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Edit</PageTitle>
+
+<PageHead Title="Edit Departments" BackLink="departments" />
+
+
+@if (Department is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@Department" OnValidSubmit="UpdateDepartment" FormName="EditDepartment">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <input type="hidden" name="Id" value="@Department.Id" />
+
+                <div class="form-group">
+                    <label>Department Name</label>
+                    <InputText class="form-control" @bind-Value="Department.DepartmentName" />
+                </div>
+
+                <div class="form-group">
+                    <label>Department Code</label>
+                    <InputText class="form-control" @bind-Value="Department.DepartmentCode" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    private Department? Department { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Department = await DepartmentRepository.GetById(Id);
+
+        if (Department is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task UpdateDepartment()
+    {
+        try
+        {
+            await DepartmentRepository.Update(Department!);
+            NavigationManager.NavigateTo("/departments");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating department: {ex.Message}");
+        }
+    }
+}

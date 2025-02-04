@@ -1,0 +1,42 @@
+﻿@page "/departments"
+
+@attribute [StreamRendering]
+<PageTitle>Departments</PageTitle>
+
+<h1>Departments</h1>
+
+<p>
+    <a href="departments/create">Create New</a>
+</p>
+
+@if (departments == null)
+{
+    <p>Loading...</p>
+}
+else if (!departments.Any())
+{
+    <p>No departments available.</p>
+}
+else
+{
+    <DataGrid TItem="Department" data="@departments">
+        <DataGridColumn Field="@nameof(Department.DepartmentName)" Caption="Department Name" Editable />
+        
+    </DataGrid>
+}
+
+@code {
+    private List<Department> departments = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            departments = await DepartmentRepository.GetAll();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (e.g., using a logger)
+            Console.Error.WriteLine($"Error fetching departments: {ex.Message}");
+        }
+    }
+}

@@ -1,0 +1,55 @@
+﻿@page "/departments"
+
+@attribute [StreamRendering]
+<PageTitle>Departments</PageTitle>
+
+<h1>Departments</h1>
+
+<p>
+    <a href="departments/create">Create New</a>
+</p>
+
+@if (departments == null)
+{
+    <p>Loading...</p>
+}
+else if (!departments.Any())
+{
+    <p>No departments available.</p>
+}
+else
+{
+    <DataGrid TItem="Department"
+              data="@departments"
+              PageSize="10"
+              Responsive
+              ShowPager
+              ShowPageSizes>
+        <DataGridColumn Field="@nameof(Department.DepartmentName)" Caption="Department Name" Editable />
+        <DataGridColumn Field="@nameof(Department.DepartmentCode)" Caption="Department Code" Editable />
+        <DataGridColumn Caption="Actions">
+            <DisplayTemplate Context="context">
+                <a href="departments/edit/?id=@context.Id" class="link">Edit</a>
+                <a href="departments/details/?id=@context.Id">Details</a>
+                <a href="departments/delete/?id=@context.Id" class="link">Delete</a>
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridCommandColumn />
+    </DataGrid>
+}
+
+@code {
+    private List<Department> departments = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            departments = await DepartmentRepository.GetAll();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (e.g., using a logger)
+            Console.Error.WriteLine($"Error fetching departments: {ex.Message}");
+        }
+    }
+}

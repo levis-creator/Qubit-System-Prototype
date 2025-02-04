@@ -1,0 +1,49 @@
+﻿@* @page "/students" *@
+@* @attribute [StreamRendering] *@
+@* <PageTitle>Students</PageTitle> *@
+
+@* <h1>Students</h1> *@
+
+@* <p> *@
+@*     <a href="students/create">Create New</a> *@
+@* </p> *@
+
+@* @if (students == null) *@
+@* { *@
+@*     <p>Loading...</p> *@
+@* } *@
+@* else if (!students.Any()) *@
+@* { *@
+@*     <p>No Courses available.</p> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <QuickGrid Class="table" Items="@students"> *@
+@*         <PropertyColumn Property="student => student.AdmissionNo" Title="Admission No" /> *@
+@*         <PropertyColumn Property="student => student.FirstName" Title="Firstname" /> *@
+@*         <PropertyColumn Property="student => student.LastName" Title="Lastname" /> *@
+@*         <PropertyColumn Property="student => student.PhoneNumber" Title="Phone Number" /> *@
+@*         <PropertyColumn Property="student => student.Email" Title="Email" /> *@
+@*         <TemplateColumn Context="student"> *@
+@*             <a href="@($"courses/edit?id={student.Id}")">Edit</a> | *@
+@*             <a href="@($"courses/details?id={student.Id}")">Details</a> | *@
+@*             <a href="@($"courses/delete?id={student.Id}")">Delete</a> *@
+@*         </TemplateColumn> *@
+@*     </QuickGrid> *@
+@* } *@
+
+@* @code { *@
+@*     private IQueryable<Student> students = default!; *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             students = await StudentRepository.GetAll(); *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             // Log the exception (e.g., using a logger) *@
+@*             Console.Error.WriteLine($"Error fetching departments: {ex.Message}"); *@
+@*         } *@
+@*     } *@
+@* } *@

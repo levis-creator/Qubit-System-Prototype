@@ -1,0 +1,46 @@
+﻿@page "/departments/create"
+@inject NavigationManager NavigationManager
+@inject ILogger<Create> Logger
+@rendermode InteractiveServer
+
+<PageTitle>Create</PageTitle>
+
+<PageHead Title="Create Department" BackLink="departments" />
+
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@Department" OnValidSubmit="AddDepartment" FormName="CreateDepartment" >
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="departmentName" class="form-label">Department Name</label>
+                <InputText id="departmentName" class="form-control" @bind-Value="Department.DepartmentName" />
+                <ValidationMessage For="() => Department.DepartmentName" />
+            </div>
+
+            <div class="mb-3">
+                <label for="departmentCode" class="form-label">Department Code</label>
+                <InputText id="departmentCode" class="form-control" @bind-Value="Department.DepartmentCode" />
+                <ValidationMessage For="() => Department.DepartmentCode" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/departments">Back to List</a>
+</div>
+
+@code {
+    private Department Department { get; set; } = new Department();
+
+    private async Task AddDepartment()
+    {
+        await DepartmentRepository.Add(Department);
+        NavigationManager.NavigateTo("/departments");
+    }
+}

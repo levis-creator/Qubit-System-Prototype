@@ -1,0 +1,52 @@
+﻿@page "/courses"
+
+@attribute [StreamRendering]
+@inject NavigationManager NavigationManager
+<PageTitle>Courses</PageTitle>
+
+<PageHead Title="Courses" CreateLink="courses/create" />
+@if (coursesDb == null)
+{
+    <p>Loading...</p>
+}
+else if (!coursesDb.Any())
+{
+    <p>No Courses available.</p>
+}
+else
+{
+    <div class="row">
+        <QuickGrid Items="coursesDb"  Pagination="pagination" >
+            <PropertyColumn Property="@(p => p.CourseName)" Title="Course Name" />
+            <PropertyColumn Property="@(p => p.CourseCode)" Title="Course Code" />
+            <PropertyColumn Property="@(p => p.DepartmentName)" Title="Department Name" />
+            <TemplateColumn Title="Actions">
+                <a href="courses/edit/?id=@context.Id" class="link">Edit</a>
+                <a href="courses/details/?id=@context.Id" class="link">Details</a>
+                <a href="courses/delete/?id=@context.Id" class="link">Delete</a>
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+    <Paginator State="pagination" />
+}
+
+
+@code {
+
+    private IQueryable<CourseDisplayDto> coursesDb = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var results = await CourseRepository.CourseDisplayAll();
+            coursesDb = results.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error fetching courses: {ex.Message}");
+            coursesDb = new List<CourseDisplayDto>().AsQueryable(); // Fallback to empty list
+        }
+    }
+}

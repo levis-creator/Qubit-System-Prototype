@@ -1,0 +1,171 @@
+﻿ @page "/students/edit"
+ @inject NavigationManager NavigationManager
+ @rendermode InteractiveServer
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Student</h2>
+<hr />
+@if (Student is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <Validations @ref="validations" Model="@Student" Mode="ValidationMode.Manual">
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            First Name
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Student!.FirstName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Middlename
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Student!.MiddleName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Lastname
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Student!.LastName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Admission No
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Student!.AdmissionNo">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Email
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Student!.Email" Role="TextRole.Email">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Phone Number
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@Student!.PhoneNumber" Role="TextRole.Telephone">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>
+                            Course
+                        </FieldLabel>
+                        <FieldBody>
+                            <Select @bind-SelectedValue="@Student!.CoursesId" Class="form-control">
+                                <SelectItem>Choose Course</SelectItem>
+                                @foreach (var course in Courses)
+                                {
+                                    <SelectItem Value="@course.Id">
+                                        @course.CourseName
+                                    </SelectItem>
+                                }
+                            </Select>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Button Color="Color.Primary" Clicked="@UpdateStudent">Submit</Button>
+            </Validations>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/students">Back to List</a>
+</div>
+
+@code {
+    Validations? validations;
+    [SupplyParameterFromQuery]
+    private string Id{ get; set; }
+
+    [SupplyParameterFromForm]
+    private StudentInputDto? Student { get; set; }
+    private List<CourseDisplayDto> Courses { get; set; } = [];
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        Student ??= await StudentRepository.GetStudentFullInputDetails(Id);
+        Courses = await CourseRepository.CourseDisplayAll();
+
+        if (Student is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateStudent()
+    {
+        try
+        {
+
+            await StudentRepository.UpdateStudentInputDetails(Student!);
+            NavigationManager.NavigateTo("/students");
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+}

@@ -1,0 +1,18 @@
+﻿@page "/"
+@using QubitWith.Auth.Data.Models.Entities.Statistics
+@using QubitWith.Auth.Data.Persistence.Contracts
+
+@inject IStatisticsRepository statisticRepository
+@attribute [Authorize]
+<PageTitle>Home</PageTitle>
+<AuthorizeView>
+    <StatisticsSection   />
+</AuthorizeView>
+@code {
+    private StatisticsAdmin? statisticAdmin;
+    protected override async Task OnInitializedAsync()
+    {
+        statisticAdmin = await statisticRepository.GetAdminStatistics();
+    }
+}
+

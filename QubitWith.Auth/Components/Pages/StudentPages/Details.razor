@@ -1,0 +1,68 @@
+﻿ @page "/students/details"
+ @inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Student</h2>
+    <hr />
+    @if (studentDetail is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <PageHead Title="Student" BackLink="/students" EditLink="@($"/students/edit?id={studentDetail!.Id}")" />
+
+        <dl class="row">
+            <dt class="col-sm-2">Student Name</dt>
+            <dd class="col-sm-10">@studentDetail.FirstName @studentDetail.MiddleName @studentDetail.LastName</dd>
+            <dt class="col-sm-2">Admission No</dt>
+            <dd class="col-sm-10">@studentDetail.AdmissionNo</dd>
+            <dt class="col-sm-2">Email</dt>
+            <dd class="col-sm-10">@studentDetail.EmailAddress</dd>
+            <dt class="col-sm-2">Phone Number</dt>
+            <dd class="col-sm-10">@studentDetail.PhoneNumber</dd>
+
+            <dt class="col-sm-2">Courses</dt>
+            <dd class="col-sm-10">
+                <table class="table">
+
+                    @foreach (var course in studentDetail.Courses)
+                    {
+
+                        <tr>
+                            <td>@course.CourseName</td>
+                            <td>@course.CourseCode</td>
+                        </tr>
+                    }
+                </table>
+            </dd>
+
+        </dl>
+        <div>
+            <a href="@($"/students/edit?id={studentDetail.Id}")">Edit</a> |
+            <a href="@($"/students")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private StudentDetailsDto? studentDetail;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        studentDetail = await StudentRepository.GetStudentFullDetails(Id);
+
+        if (studentDetail is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

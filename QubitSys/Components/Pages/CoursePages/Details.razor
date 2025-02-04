@@ -1,0 +1,56 @@
+﻿@* @page "/courses/details" *@
+@* @inject NavigationManager NavigationManager *@
+
+@* <PageTitle>Details</PageTitle> *@
+
+@* <h1>Details</h1> *@
+
+@* <div> *@
+@*     <h2>Courses</h2> *@
+@*     <hr /> *@
+@*     @if (course is null) *@
+@*     { *@
+@*         <p><em>Loading...</em></p> *@
+@*     } *@
+@*     else *@
+@*     { *@
+@*         <dl class="row"> *@
+@*             <dt class="col-sm-2">Course Name</dt> *@
+@*             <dd class="col-sm-10">@course.CourseName</dd> *@
+@*             <dt class="col-sm-2">Course Code</dt> *@
+@*             <dd class="col-sm-10">@course.CourseCode</dd> *@
+@*             <dt class="col-sm-2">Department Name</dt> *@
+@*             <dd class="col-sm-10">@course.Department!.DepartmentName</dd> *@
+@*             <dt class="col-sm-2">CreatedBy</dt> *@
+@*             <dd class="col-sm-10">@course.CreatedBy</dd> *@
+@*             <dt class="col-sm-2">CreatedAt</dt> *@
+@*             <dd class="col-sm-10">@course.CreatedAt</dd> *@
+@*             <dt class="col-sm-2">UpdatedBy</dt> *@
+@*             <dd class="col-sm-10">@course.UpdatedBy</dd> *@
+@*             <dt class="col-sm-2">UpdatedAt</dt> *@
+@*             <dd class="col-sm-10">@course.UpdatedAt</dd> *@
+@*         </dl> *@
+@*         <div> *@
+@*             <a href="@($"/courses/edit?id={course.Id}")">Edit</a> | *@
+@*             <a href="@($"/courses")">Back to List</a> *@
+@*         </div> *@
+@*     } *@
+@* </div> *@
+
+@* @code { *@
+@*     private Course? course; *@
+
+@*     [SupplyParameterFromQuery] *@
+@*     private int Id { get; set; } *@
+
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+
+@*         course = await CourseRepository.GetById(Id); *@
+
+@*         if (course is null) *@
+@*         { *@
+@*             NavigationManager.NavigateTo("notfound"); *@
+@*         } *@
+@*     } *@
+@* } *@

@@ -1,0 +1,51 @@
+﻿@page "/departments/details"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+
+<div>
+    @if (department is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <PageHead Title="Department" BackLink="/departments" EditLink="@($"/departments/edit?id={department!.Id}")" />
+        <h3>Details</h3>
+
+        <dl class="row">
+            <dt class="col-sm-2">DepartmentName</dt>
+            <dd class="col-sm-10">@department.DepartmentName</dd>
+            <dt class="col-sm-2">DepartmentCode</dt>
+            <dd class="col-sm-10">@department.DepartmentCode</dd>
+            <dt class="col-sm-2">CreatedBy</dt>
+            <dd class="col-sm-10">@department.CreatedBy</dd>
+            <dt class="col-sm-2">CreatedAt</dt>
+            <dd class="col-sm-10">@department.CreatedAt</dd>
+            <dt class="col-sm-2">UpdatedBy</dt>
+            <dd class="col-sm-10">@department.UpdatedBy</dd>
+            <dt class="col-sm-2">UpdatedAt</dt>
+            <dd class="col-sm-10">@department.UpdatedAt</dd>
+        </dl>
+
+    }
+</div>
+
+@code {
+    private Department? department;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        department = await DepartmentRepository.GetById(Id);
+
+        if (department is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

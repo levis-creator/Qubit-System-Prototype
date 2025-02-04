@@ -1,0 +1,14 @@
+﻿@using QubitWith.Auth.Data.Models.Entities.Statistics
+<section class="row">
+    <div class="row g-6 mb-6">
+        <StatisticCard />
+        <StatisticCard/>
+        <StatisticCard />
+        <StatisticCard /> 
+    </div>
+
+</section>
+@code {
+    [Parameter]
+    public StatisticsAdmin? StatisticsAdmin { get; set; }
+}

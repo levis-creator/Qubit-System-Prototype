@@ -1,0 +1,54 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">QubitSystem</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        @foreach (var navitem in navItems)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@navitem.Path" Match="NavLinkMatch.All">
+                    <Icon Name="@navitem.Icon" IconSize="IconSize.Large" class="px-3" />
+                    @navitem.Name
+                </NavLink>
+            </div>
+        }
+    </nav>
+</div>
+@code {
+    private class NavItem()
+    {
+        public string Name { get; set; } = string.Empty;
+        public IconName Icon { get; set; }
+        public string Path { get; set; } = string.Empty;
+    }
+    private List<NavItem> navItems = new List<NavItem>
+    {
+        new NavItem
+        {
+            Icon=IconName.Home,
+            Name="Home",
+            Path=""
+        }, new NavItem
+        {
+            Icon=IconName.Building,
+            Name="Departments",
+            Path="departments"
+        },new NavItem
+        {
+            Icon=IconName.Book,
+            Name="Courses",
+            Path="courses"
+        },new NavItem
+        {
+            Icon=IconName.UserFriends,
+            Name="Students",
+            Path="students"
+        },
+
+    };
+}

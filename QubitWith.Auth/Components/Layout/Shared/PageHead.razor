@@ -1,0 +1,38 @@
+﻿<div class="d-flex align-items-center ">
+    @if (BackLink.Length != 0)
+    {
+        <div>
+            <a href="@BackLink" class="icon-btn btn-light">
+                <Icon Name="IconName.ArrowLeftShort" Size="IconSize.x3" Class="mx-auto" />
+            </a>
+        </div>
+    }
+    <div class="flex-grow-1">
+        <h1>@Title</h1>
+    </div>
+    @if (CreateLink.Length != 0)
+    {
+        <a href="@CreateLink" class="btn btn-success">
+            Create new
+        </a>
+    }
+    @if (EditLink.Length != 0)
+    {
+        <a href="@EditLink" class="btn btn-success">
+            Edit
+        </a>
+    }
+
+</div>
+<hr />
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Head";
+    [Parameter]
+    public string CreateLink { get; set; } = string.Empty;
+    [Parameter]
+    public string BackLink { get; set; } = string.Empty;
+    [Parameter]
+    public string EditLink { get; set; } = string.Empty;
+
+}

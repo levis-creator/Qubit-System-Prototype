@@ -1,0 +1,102 @@
+﻿/* General button style */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between icon and text */
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+}
+
+    /* Button size variants */
+    .icon-btn.sm {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+
+    .icon-btn.lg {
+        padding: 10px 14px;
+        font-size: 1.2rem;
+    }
+
+    /* Icon-only buttons */
+    .icon-btn.icon-only {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    /* Button colors */
+    .icon-btn.primary {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .icon-btn.secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .icon-btn.success {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .icon-btn.danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .icon-btn.warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .icon-btn.info {
+        background-color: #17a2b8;
+        color: #fff;
+    }
+
+    .icon-btn.light {
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+
+    .icon-btn.dark {
+        background-color: #343a40;
+        color: #fff;
+    }
+
+    /* Hover effects */
+    .icon-btn:hover {
+        filter: brightness(90%);
+        transform: translateY(-2px); /* Slight lift effect */
+    }
+
+        /* Hover effect for icons */
+        .icon-btn:hover i {
+            transform: scale(1.2); /* Slight zoom effect */
+            transition: transform 0.2s ease-in-out;
+        }
+
+    /* Active (pressed) effect */
+    .icon-btn:active {
+        filter: brightness(80%);
+        transform: translateY(1px); /* Pressed-down effect */
+    }
+
+    /* Icon styling */
+    .icon-btn i {
+        font-size: 1.2rem;
+        transition: transform 0.2s ease-in-out;
+    }
