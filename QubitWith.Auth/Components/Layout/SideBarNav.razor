@@ -1,0 +1,32 @@
+﻿@rendermode InteractiveServer
+<Sidebar Href="/"
+         IconName="IconName.BootstrapFill"
+         Title="Qubit System"
+         DataProvider="SidebarDataProvider" />
+
+@code {
+    IEnumerable<NavItem>? navItems;
+
+    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
+    {
+        if (navItems is null)
+            navItems = GetNavItems();
+
+        return await Task.FromResult(request.ApplyTo(navItems));
+    }
+
+    private IEnumerable<NavItem> GetNavItems()
+    {
+        navItems = new List<NavItem>
+        {
+            new NavItem { Id = "1", Href = " ", Class="navlink", IconName = IconName.HouseDoorFill, Text = "Dashboard", Match=NavLinkMatch.All},
+            new NavItem { Id = "2", Href="Departments", Class="navlink",  IconName = IconName.Box2Fill, Text = "Departments" },
+            new NavItem { Id = "3", Href="Courses", Class="navlink", IconName = IconName.BookFill, Text = "Courses" },
+            new NavItem { Id = "4", Href="Students", Class="navlink", IconName = IconName.MortarboardFill, Text = "Students" },
+            new NavItem { Id = "4", Href="academicyear", Class="navlink", IconName = IconName.Calendar3EventFill, Text = "Academic Year" },
+
+            };
+
+        return navItems;
+    }
+}

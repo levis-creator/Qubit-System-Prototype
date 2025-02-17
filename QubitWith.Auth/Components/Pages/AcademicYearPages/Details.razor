@@ -1,0 +1,51 @@
+﻿ @page "/academicyear/details" 
+ @inject NavigationManager NavigationManager 
+
+ <PageTitle>Details</PageTitle> 
+
+
+ <div> 
+     @if (academicYear is null) 
+     { 
+         <p><em>Loading...</em></p> 
+     } 
+     else 
+     { 
+         <PageHead Title="Academic Period" BackLink="/academicyear" EditLink="@($"/academicyear/edit?id={academicYear!.Id}")" /> 
+         <h3>Details</h3> 
+
+         <dl class="row"> 
+             <dt class="col-sm-2">Academic Period</dt> 
+             <dd class="col-sm-10">@academicYear.Period</dd> 
+             <dt class="col-sm-2">Year</dt> 
+             <dd class="col-sm-10">@academicYear.AcademicYear</dd> 
+             <dt class="col-sm-2">CreatedBy</dt> 
+             <dd class="col-sm-10">@academicYear.CreatedBy</dd> 
+             <dt class="col-sm-2">CreatedAt</dt> 
+             <dd class="col-sm-10">@academicYear.CreatedAt</dd> 
+             <dt class="col-sm-2">UpdatedBy</dt> 
+             <dd class="col-sm-10">@academicYear.UpdatedBy</dd> 
+             <dt class="col-sm-2">UpdatedAt</dt> 
+             <dd class="col-sm-10">@academicYear.UpdatedAt</dd> 
+         </dl> 
+
+     } 
+ </div> 
+
+ @code { 
+     private AcademicPeriod? academicYear; 
+
+     [SupplyParameterFromQuery] 
+     private int Id { get; set; } 
+
+     protected override async Task OnInitializedAsync() 
+     { 
+
+         academicYear = await AcademicRepository.GetById(Id); 
+
+         if (academicYear is null) 
+         { 
+             NavigationManager.NavigateTo("notfound"); 
+         } 
+     } 
+ } 

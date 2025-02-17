@@ -61,7 +61,11 @@
                 </InputSelect>
                 <ValidationMessage For="@(() => Student.CoursesId)" />
             </div>
-
+            <div class="mb-3">
+                <label class="form-label">Admission Date</label>
+                <InputDate TValue="DateOnly" @bind-Value="Student.AdmissionDate" class="form-control" />
+                <ValidationMessage For="@(() => Student.AdmissionDate)" />
+            </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </EditForm>
     </div>

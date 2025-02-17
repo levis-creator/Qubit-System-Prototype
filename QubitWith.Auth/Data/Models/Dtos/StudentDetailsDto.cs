@@ -18,6 +18,8 @@ namespace QubitWith.Auth.Data.Models.Dtos
         public string AdmissionNo { get; set; } = string.Empty;
 
         public List<CourseDisplayDto> Courses { get; set; } = [];
+        public DateOnly AdmissionDate { get; set; }
+
     }
 }
   

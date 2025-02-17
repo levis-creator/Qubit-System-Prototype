@@ -17,5 +17,6 @@ namespace QubitWith.Auth.Data.Models.Dtos
         [Required]
         public string AdmissionNo { get; set; } = string.Empty;
         public int? CoursesId { get; set; }
+        public DateOnly AdmissionDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
     }
 }

@@ -1,20 +1,20 @@
-﻿@page "/courses"
-
-@attribute [StreamRendering]
+﻿@page "/academicyear"
 @rendermode InteractiveServer
-@inject NavigationManager NavigationManager
-@inject SearchService<CourseDisplayDto> SearchService
 
-<PageTitle>Courses</PageTitle>
+@attribute [StreamRendering, Authorize]
+@inject SearchService<AcademicPeriod> SearchService
 
-<PageHead Title="Courses" CreateLink="courses/create" />
-@if (coursesDb == null)
+<PageTitle>Academic Period</PageTitle>
+
+<PageHead Title="Academic Periods" CreateLink="academicyear/create" />
+
+@if (academicPeriods == null)
 {
     <p>Loading...</p>
 }
-else if (!coursesDb.Any())
+else if (!academicPeriods.Any())
 {
-    <p>No Courses available.</p>
+    <p>No Academic Years available.</p>
 }
 else
 {
@@ -23,30 +23,28 @@ else
             <div class="search-container">
                 <TextInput type="search" class="form-control search-input" placeholder="Search..." @bind-value="searchTerm" @oninput="OnSearchInput" />
                 <i class="fas fa-search search-icon"></i>
+
             </div>
         </div>
-        <Grid TItem="CourseDisplayDto"
+        <Grid TItem="AcademicPeriod"
               Class="table table-hover table-bordered table-striped"
-              Data="filterCourses"
+              Data="filterAcademicPeriods"
               AllowSorting=true
               PageSize="10"
               AllowPaging=true
               AllowSelection="true"
-              @bind-SelectedItems="selectCourses"
+              @bind-SelectedItems="selectAcademicPeriod"
               SelectionMode="GridSelectionMode.Multiple"
               EmptyText="No records to display"
               Responsive=true>
             <GridColumns>
-                <GridColumn TItem="CourseDisplayDto" SortKeySelector="@(item => item.DepartmentName)" HeaderText="Course Name">
-                    @context.CourseName
+                <GridColumn TItem="AcademicPeriod" HeaderText="Academic Period">
+                    @context.Period
                 </GridColumn>
-                <GridColumn TItem="CourseDisplayDto" HeaderText="Course Code">
-                    @context.CourseCode
+                <GridColumn TItem="AcademicPeriod" HeaderText="Academic Year">
+                    @context.AcademicYear
                 </GridColumn>
-                <GridColumn TItem="CourseDisplayDto" HeaderText="Department Name">
-                    @context.DepartmentName
-                </GridColumn>
-                <GridColumn TItem="CourseDisplayDto">
+                <GridColumn TItem="AcademicPeriod">
                     <ChildContent>
                         <div class="dropdown">
                             <button class="btn icon-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -54,13 +52,13 @@ else
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="/courses/edit/?id=@context.Id">Edit</a>
+                                    <a class="dropdown-item" href="/academicyear/edit/?id=@context.Id">Edit</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/courses/details/?id=@context.Id">View</a>
+                                    <a class="dropdown-item" href="/academicyear/details/?id=@context.Id">View</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/courses/delete/?id=@context.Id">Delete</a>
+                                    <a class="dropdown-item" href="/academicyear/delete/?id=@context.Id">Delete</a>
                                 </li>
                             </ul>
                         </div>
@@ -74,31 +72,31 @@ else
                     </div>
                 </GridEmptyDataTemplate>
             </GridTemplates>
-        </Grid>
 
+        </Grid>
     </div>
+
+
 }
 
-
 @code {
-
-    private IEnumerable<CourseDisplayDto> coursesDb = default!;
-    private IEnumerable<CourseDisplayDto> filterCourses = Enumerable.Empty<CourseDisplayDto>();
-    private HashSet<CourseDisplayDto> selectCourses = new();
+    private IEnumerable<AcademicPeriod> academicPeriods = default!;
+    private IEnumerable<AcademicPeriod> filterAcademicPeriods = default!;
+    private HashSet<AcademicPeriod> selectAcademicPeriod = new();
     private string searchTerm = string.Empty; // Store the search term
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var results = await CourseRepository.CourseDisplayAll();
-            coursesDb = results.AsEnumerable();
-            filterCourses = coursesDb;
+            var results = await AcademicRepository.GetAll();
+            academicPeriods = results.AsEnumerable();
+            filterAcademicPeriods = academicPeriods;
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error fetching courses: {ex.Message}");
-            coursesDb = new List<CourseDisplayDto>().AsQueryable(); // Fallback to empty list
+            Console.Error.WriteLine($"Error fetching academic years: {ex.Message}");
+            filterAcademicPeriods = new List<AcademicPeriod>().AsEnumerable(); // Fallback to empty list
         }
     }
     // SearchInput funcionality
@@ -110,10 +108,9 @@ else
 
     private void SearchItem(string? value)
     {
-        filterCourses = SearchService.Search(coursesDb, value!,
-            s => s.CourseName,
-            s => s.CourseCode,
-            s => s.DepartmentName
+        filterAcademicPeriods = SearchService.Search(academicPeriods, value!,
+            s => s.AcademicYear,
+            s => s.Period
         );
     }
 

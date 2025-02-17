@@ -1,0 +1,22 @@
+﻿
+<div class="search-container">
+    <TextInput type="search" class="form-control search-input" placeholder="@Placeholder" @bind-value="SearchTerm" @oninput="OnInput" />
+    <i class="fas fa-search search-icon"></i>
+</div>
+
+@code {
+    [Parameter]
+    public string Placeholder { get; set; } = "Search..."; // Default placeholder text
+
+    [Parameter]
+    public string SearchTerm { get; set; } = string.Empty; // Bound search term
+
+    [Parameter]
+    public EventCallback<string> SearchTermChanged { get; set; } // Callback for when the search term changes
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        SearchTerm = e.Value?.ToString() ?? string.Empty;
+        await SearchTermChanged.InvokeAsync(SearchTerm); // Notify parent component of the change
+    }
+}

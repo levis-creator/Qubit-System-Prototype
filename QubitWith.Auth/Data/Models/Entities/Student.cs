@@ -18,5 +18,7 @@ namespace QubitWith.Auth.Data.Models.Entities
         [Required]
         public string AdmissionNo { get; set; } = string.Empty;
         public List<Course> Courses { get; set; } = [];
+        public DateOnly AdmissionDate { get; set; }
+
     }
 }

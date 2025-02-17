@@ -1,0 +1,43 @@
+﻿ @page "/academicyear/create" 
+ @inject NavigationManager NavigationManager 
+ @inject ILogger<Create> Logger 
+ @rendermode InteractiveServer 
+
+ <PageTitle>Create</PageTitle> 
+
+ <PageHead Title="Create Department" BackLink="departments" /> 
+
+
+ <div class="row"> 
+     <div class="col-md-4"> 
+         <EditForm Model="@AcademicPeriod" OnValidSubmit="AddAcademicYear" FormName="CreateDepartment" > 
+             <DataAnnotationsValidator /> 
+             <ValidationSummary /> 
+
+             <div class="mb-3"> 
+                 <label for="academicPeriod" class="form-label">Academic Period</label> 
+                 <InputText id="academicPeriod" class="form-control" @bind-Value="AcademicPeriod.Period" /> 
+                 <ValidationMessage For="() => AcademicPeriod.Period" /> 
+             </div> 
+
+             <div class="mb-3"> 
+                 <label for="academicYear" class="form-label">Academic Year</label> 
+                 <InputText id="academicYear" class="form-control" @bind-Value="AcademicPeriod.AcademicYear" /> 
+                 <ValidationMessage For="() => AcademicPeriod.AcademicYear" /> 
+             </div> 
+
+             <button type="submit" class="btn btn-primary">Submit</button> 
+         </EditForm> 
+     </div> 
+ </div> 
+
+
+ @code { 
+     private AcademicPeriod AcademicPeriod { get; set; } = new(); 
+
+     private async Task AddAcademicYear() 
+     { 
+         await AcademicRepository.Add(AcademicPeriod); 
+         NavigationManager.NavigateTo("/academicyear"); 
+     } 
+ } 
